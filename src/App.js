@@ -22,7 +22,7 @@ React.useEffect ( () => {
 
   const category = categoryId ? `category=${categoryId}` : '';
 
-  fetch(`https://663284dec51e14d69564b3a5.mockapi.io/photo?page=${page}&limit=3&${category}`)
+  fetch(`https://663284dec51e14d69564b3a5.mockapi.io/photo?page=${page}&limit=2&${category}`)
   .then (res => res.json())
   .then(json => {
     setCollections(json);
@@ -53,16 +53,10 @@ React.useEffect ( () => {
           collections.filter(obj => {return obj.name.toLowerCase().includes(serchValue.toLowerCase());}).map((obj, index) => (
   <Collection key={index} name={obj.name} images={obj.photos} />
         )))}
-        {/* {
-          collections.filter(obj => {
-            return obj.name.toLowerCase().includes(serchValue.toLowerCase());
-          }).map((obj, index) => (
-            <Collection key={index} name={obj.name} images={obj.photos} />
-          ))} */}
       </div>
       <ul className="pagination">
         {
-          [...Array(5)].map((_, i) => <li onClick={() => setPage(i + 1 )} className={page === i  + 1? 'active' : ''}>{i+1}</li>
+          [...Array(4)].map((_, i) => <li onClick={() => setPage(i + 1 )} className={page === i  + 1? 'active' : ''}>{i+1}</li>
           )}
 
       </ul>
