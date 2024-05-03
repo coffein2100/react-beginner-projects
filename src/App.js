@@ -14,17 +14,25 @@ function App() {
   const [categoryId, setCotegoryId] = React.useState(0);
   const [serchValue, setSerchValue] = React.useState('');
   const [collections, setCollections ] = React.useState([]);
+  const [isLoading, setIsLoading ] = React.useState(true);
+  const [page, setPage ] = React.useState(1);
 
 React.useEffect ( () => {
-  fetch(`https://663284dec51e14d69564b3a5.mockapi.io/photo?${categoryId ? `category=${categoryId}` : ''}`)
+  setIsLoading(true);
+
+  const category = categoryId ? `category=${categoryId}` : '';
+
+  fetch(`https://663284dec51e14d69564b3a5.mockapi.io/photo?page=${page}&limit=3&${category}`)
   .then (res => res.json())
   .then(json => {
     setCollections(json);
   }).catch(err =>{
     console.warn(err);
     alert('Ошибка получения пользователей');
-  });
-}, [categoryId]);
+  }).finally(() => {
+    setIsLoading(false);
+  })
+}, [categoryId, page]);
 
   return (
     <div className="App">
@@ -39,17 +47,24 @@ React.useEffect ( () => {
         <input value={serchValue} onChange={e => setSerchValue(e.target.value)} className="search-input" placeholder="Поиск по названию" />
       </div>
       <div className="content">
-        {
+        {isLoading ? (
+        <h2>Идет загрузка...</h2>
+        ) : (
+          collections.filter(obj => {return obj.name.toLowerCase().includes(serchValue.toLowerCase());}).map((obj, index) => (
+  <Collection key={index} name={obj.name} images={obj.photos} />
+        )))}
+        {/* {
           collections.filter(obj => {
             return obj.name.toLowerCase().includes(serchValue.toLowerCase());
           }).map((obj, index) => (
             <Collection key={index} name={obj.name} images={obj.photos} />
-          ))}
+          ))} */}
       </div>
       <ul className="pagination">
-        <li>1</li>
-        <li className="active">2</li>
-        <li>3</li>
+        {
+          [...Array(5)].map((_, i) => <li onClick={() => setPage(i + 1 )} className={page === i  + 1? 'active' : ''}>{i+1}</li>
+          )}
+
       </ul>
     </div>
   );
